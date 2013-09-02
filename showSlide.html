@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>showSlide</title>
+	<style>
+		body {margin:0;padding:0;}
+		#showSlide {
+			width: 100%;
+			height: 100%;
+			position: absolute;
+			left:0;
+			top:0;
+			overflow: hidden;
+		}
+		.showSlide {
+			width: 100%;
+			height: 100%;
+			background-color: #ccc;
+			position: absolute;
+			z-index:1;
+			left: 0;
+			top: 0;
+			transition: left .5s;
+		}
+		.currentSlide {
+			z-index: 2;
+			left: 100%;
+			top: 0;
+			transition: left .5s .5s;
+		}
+	</style>
+</head>
+<body>
+	<div id="showSlide"></div>
+	<script>
+
+	var showSlide = {
+		containerName: 'showSlide',
+		className: 'showSlide',
+		slides: [],
+		currentSlideNumber: 0,
+		totalSlideNumber: 0,
+		init: function() {
+			var self = this;
+			self.totalSlideNumber = self.slides.length;
+			self.generateSlideDivs();
+			self.startShow();
+		},
+		generateSlideDivs: function() {
+			console.log('Generating Divs');
+			var self = this;
+			var showDiv = document.getElementById(self.containerName);
+			for(var i = 0; i < self.slides.length; i++) {
+				// self.slides
+				var divHTML = '<div class="'+self.className+'" id="'+self.className+i+'" style="'+self.slides[i].css+'">'+self.slides[i].text+'</div>';
+				showDiv.insertAdjacentHTML('beforeend', divHTML);
+			}
+		},
+		startShow: function() {
+			console.log('Starting Show');
+			var self = this;
+			var currentSlide = document.getElementById(self.className+self.currentSlideNumber);
+			addClass(currentSlide,'currentSlide');
+			setTimeout(self.showNext, self.slides[self.currentSlideNumber].duration, self);
+		},
+		showNext: function(self) {
+			console.log('Show Next');
+			var previousSlide = document.getElementById(self.className+self.currentSlideNumber);
+			removeClass(previousSlide,'currentSlide');
+			if(self.currentSlideNumber<self.totalSlideNumber-1){
+				self.currentSlideNumber++;	
+			} else {
+				self.currentSlideNumber = 0;
+			}
+			//self.slides[self.currentSlideNumber].transition;
+			var currentSlide = document.getElementById(self.className+self.currentSlideNumber);
+			addClass(currentSlide,'currentSlide');
+			setTimeout(self.showNext, self.slides[self.currentSlideNumber].duration, self);
+		}
+	};
+
+	function hasClass(ele,cls) {
+		return ele.className.match(new RegExp('(\\s|^)'+cls+'(\\s|$)'));
+	}
+	 
+	function addClass(ele,cls) {
+		if (!this.hasClass(ele,cls)) ele.className += " "+cls;
+	}
+	 
+	function removeClass(ele,cls) {
+		if (hasClass(ele,cls)) {
+	    	var reg = new RegExp('(\\s|^)'+cls+'(\\s|$)');
+			ele.className=ele.className.replace(reg,' ');
+		}
+	}
+
+	showSlide.slides = [
+		{
+			transition: '',
+			duration: '3000',
+			background: "altranlogo.jpg",
+			text: "Test",
+			code: '',
+			css: 'background-color: #eee;'
+		},
+		{
+			transition: '',
+			duration: '3000',
+			background: "altranlogo.jpg",
+			text: "Slide number 2",
+			code: '',
+			css: 'background-color: #fdd'
+		}
+	];
+
+	showSlide.init();
+
+	</script>
+</body>
+</html>
